@@ -1,33 +1,31 @@
 extends layout
+include _includes/sharedFunctions.jade
 
 block content
   #banner.page-header
     .row
       .col-lg-6
-        h1 Reviewer
-          small  - Find and review places near you!
+        h1= pageHeader.title
+          small #{pageHeader.strapline}
     .row
       .col-xs.12.col-sm-8
         .row.list-group
-          .col-xs-12.list-group-item
-            h4
-              a(href="/location") Starcups
-              small  
-                span.glyphicon.glyphicon-star
-                span.glyphicon.glyphicon-star
-                span.glyphicon.glyphicon-star
-                span.glyphicon.glyphicon-star-empty
-                span.glyphicon.glyphicon-star-empty
-              span.badge.pull-right.badge-default 100m
-            p.address 123 Test Address, Address Line 2
-            p
-              span.label.label-warning Drinks
+          each location in locations
+            .col-xs-12.list-group-item
+              h4
+                a(href="/location")= location.name + " "
+                small
+                +outputRating(location.rating)
+                span.badge.pull-right.badge-default 100m
+              p.address 123 Test Address, Address Line 2
+              p
+                span.label.label-warning Drinks
 
-              span.label.label-warning Food
+                span.label.label-warning Food
 
-              span.label.label-warning Stuff
+                span.label.label-warning Stuff
 
-              span.label.label-warning Beer
+                span.label.label-warning Beer
 
-        .col-xs-12.col-sm-4
-          p.lead Let Reviewer do the hard for you!, find great places to eat, drink and just hang out!
+      .col-xs-12.col-sm-4
+        p.lead Let Reviewer do the hard for you!, find great places to eat, drink and just hang out!
