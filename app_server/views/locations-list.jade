@@ -1,31 +1,26 @@
 extends layout
-include _includes/sharedFunctions.jade
+include _includes/sharedFunctions
 
 block content
   #banner.page-header
     .row
       .col-lg-6
         h1= pageHeader.title
-          small #{pageHeader.strapline}
+         small &nbsp;#{pageHeader.strapline}
     .row
-      .col-xs.12.col-sm-8
+      .col-xs-12.col-sm-8
         .row.list-group
           each location in locations
             .col-xs-12.list-group-item
-              h4
-                a(href="/location")= location.name + " "
-                small
-                +outputRating(location.rating)
-                span.badge.pull-right.badge-default 100m
-              p.address 123 Test Address, Address Line 2
+              h4 
+                a(href="/locations")= location.name
+                small &nbsp;
+                  +outputRating(location.rating)
+                span.badge.pull-right.badge-default= location.distance
+              p.address= location.address
               p
-                span.label.label-warning Drinks
-
-                span.label.label-warning Food
-
-                span.label.label-warning Stuff
-
-                span.label.label-warning Beer
-
-      .col-xs-12.col-sm-4
-        p.lead Let Reviewer do the hard for you!, find great places to eat, drink and just hang out!
+                each facility in location.facilities
+                  span.label.label-warning= facility
+                  | &nbsp;
+      .col-xs-12.col-sm-4 
+        p.lead= sidebar
