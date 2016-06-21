@@ -1,3 +1,8 @@
+var request = require('request');
+var apiOptions = {
+  server : "http://localhost:3000"
+};
+
 /* Grab the 'home' page */
 module.exports.homelist = function (req, res) {
   res.render('locations-list', {
