@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 
+/** The review document schema */
 var reviewSchema = new mongoose.Schema({
     author: String,
     rating: {
@@ -15,6 +16,7 @@ var reviewSchema = new mongoose.Schema({
     }
 });
 
+/** The opening time document schema */
 var openingTimeSchema = new mongoose.Schema({
     days: {
         type: String,
@@ -28,6 +30,7 @@ var openingTimeSchema = new mongoose.Schema({
     }
 });
 
+/** The location document schema */
 var locationSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -49,4 +52,5 @@ var locationSchema = new mongoose.Schema({
     reviews: [reviewSchema]
 });
 
+/** Defining 'Location' model */
 mongoose.model('Location', locationSchema);
