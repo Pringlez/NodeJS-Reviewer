@@ -28,6 +28,7 @@ var _formatDistance = function (distance) {
 /** This function handles error messages */
 var _showError = function (req, res, status) {
   var title, content;
+  // Different error types available
   if (status === 404) {
     title = "404, No Page Here!";
     content = "No page exists here, Sorry";
@@ -57,6 +58,7 @@ var renderHomepage = function(req, res, responseBody){
       message = "No Places Found!";
     }
   }
+  // Render the 'location-list' view, passing title, pageHeader, sidebar, locations and message variables
   res.render('locations-list', {
     title: 'Reviewer - Find great places to eat & drink',
     pageHeader: {
@@ -78,6 +80,7 @@ var getLocationInfo = function (req, res, callback) {
     method : "GET",
     json : {}
   };
+  // Sending a location API request to server, anonymous function handles response
   request(
     requestOptions,
     function(err, response, body) {
@@ -97,6 +100,7 @@ var getLocationInfo = function (req, res, callback) {
 
 /** This function renders the details page for a specific record */
 var renderDetailPage = function (req, res, locDetail) {
+  // Render the 'location-info' view, passing title, pageHeader, sidebar and location variables
   res.render('location-info', {
     title: locDetail.name,
     pageHeader: {title: locDetail.name},
@@ -110,6 +114,7 @@ var renderDetailPage = function (req, res, locDetail) {
 
 /** This function renders the review form the user interacts with to add reviews */
 var renderReviewForm = function (req, res, locDetail) {
+  // Render the 'add-review' view, passing title, pageHeader and error variables
   res.render('add-review', {
     title: 'Review ' + locDetail.name + ' on Reviewer',
     pageHeader: { title: 'Review ' + locDetail.name },
@@ -121,6 +126,7 @@ var renderReviewForm = function (req, res, locDetail) {
 module.exports.homelist = function(req, res){
   var requestOptions, path;
   path = '/api/locations';
+  // Building the request type + path
   requestOptions = {
     url : apiOptions.server + path,
     method : "GET",
@@ -131,16 +137,19 @@ module.exports.homelist = function(req, res){
       maxDistance : 20
     }
   };
+  // Sending the request with parameters 'requestOptions'
   request(
     requestOptions,
     function(err, response, body) {
       var i, data;
       data = body;
+      // Calculate & format distance
       if (response.statusCode === 200 && data.length) {
         for (i=0; i<data.length; i++) {
           data[i].distance = _formatDistance(data[i].distance);
         }
       }
+      // Calling the home page render function
       renderHomepage(req, res, data);
     }
   );
@@ -165,19 +174,23 @@ module.exports.doAddReview = function(req, res){
   var requestOptions, path, locationid, postdata;
   locationid = req.params.locationid;
   path = "/api/locations/" + locationid + '/reviews';
+  // Building the data in an object to be sent
   postdata = {
     author: req.body.name,
     rating: parseInt(req.body.rating, 10),
     reviewText: req.body.review
   };
+  // Building the request with the data and setting request type
   requestOptions = {
     url : apiOptions.server + path,
     method : "POST",
     json : postdata
   };
+  // If theres an error with the data then re-direct
   if (!postdata.author || !postdata.rating || !postdata.reviewText) {
     res.redirect('/location/' + locationid + '/reviews/new?err=val');
   } else {
+    // Else, send the request to the API server, callback handles the response from the server
     request(
       requestOptions,
       function(err, response, body) {
@@ -187,6 +200,7 @@ module.exports.doAddReview = function(req, res){
           res.redirect('/location/' + locationid + '/reviews/new?err=val');
         } else {
           console.log(body);
+          // If theres was an error display message
           _showError(req, res, response.statusCode);
         }
       }

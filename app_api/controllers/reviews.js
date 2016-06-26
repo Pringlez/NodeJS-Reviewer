@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var reviewer = mongoose.model('Location');
 
+/** Send result back to user */
 var sendJSONresponse = function(res, status, content) {
   res.status(status);
   res.json(content);
@@ -10,6 +11,7 @@ var sendJSONresponse = function(res, status, content) {
 /** Route - /api/locations/:locationid/reviews */
 module.exports.reviewsCreate = function(req, res) {
   if (req.params.locationid) {
+    // Creating a new review document / object by locating record by 'locationid' variable
     reviewer
       .findById(req.params.locationid)
       .select('reviews')
@@ -18,6 +20,7 @@ module.exports.reviewsCreate = function(req, res) {
           if (err) {
             sendJSONresponse(res, 400, err);
           } else {
+            // Pass the location to be updated with the new review
             doAddReview(req, res, location);
           }
         }
@@ -30,19 +33,25 @@ module.exports.reviewsCreate = function(req, res) {
 };
 
 var doAddReview = function(req, res, location) {
+  // If the location is not null then continue
   if (!location) {
     sendJSONresponse(res, 404, "locationid not found");
   } else {
+    // Add / push the new review to the location document / object
     location.reviews.push({
+      // The request variable contains the author, rating & review text
       author: req.body.author,
       rating: req.body.rating,
       reviewText: req.body.reviewText
     });
+    // Commit / save the changes made to the document
     location.save(function(err, location) {
       var thisReview;
+      // If there was an error then display message
       if (err) {
         sendJSONresponse(res, 400, err);
       } else {
+        // Else update average rating & display review response
         updateAverageRating(location._id);
         thisReview = location.reviews[location.reviews.length - 1];
         sendJSONresponse(res, 201, thisReview);
@@ -51,19 +60,23 @@ var doAddReview = function(req, res, location) {
   }
 };
 
+// This function updates the location's average rating
 var updateAverageRating = function(locationid) {
   console.log("Update rating average for", locationid);
+  // Find location by 'locationid'
   reviewer
     .findById(locationid)
     .select('reviews')
     .exec(
       function(err, location) {
+        // If no errors found then update
         if (!err) {
           doSetAverageRating(location);
         }
       });
 };
 
+// The function calculate the average rating
 var doSetAverageRating = function(location) {
   var i, reviewCount, ratingAverage, ratingTotal;
   if (location.reviews && location.reviews.length > 0) {
@@ -74,7 +87,9 @@ var doSetAverageRating = function(location) {
     }
     ratingAverage = parseInt(ratingTotal / reviewCount, 10);
     location.rating = ratingAverage;
+    // Save the rating to the document
     location.save(function(err) {
+      // Output to console if theres an error
       if (err) {
         console.log(err);
       } else {
@@ -84,13 +99,16 @@ var doSetAverageRating = function(location) {
   }
 };
 
+// This function allows the user to update a review
 module.exports.reviewsUpdateOne = function(req, res) {
+  // If no location or review record was found then output error message
   if (!req.params.locationid || !req.params.reviewid) {
     sendJSONresponse(res, 404, {
       "message": "Not found, locationid and reviewid are both required"
     });
     return;
   }
+  // Find the location by 'locationid' record
   reviewer
     .findById(req.params.locationid)
     .select('reviews')
@@ -134,6 +152,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
   );
 };
 
+// This function returns one specific review record by 'locationid' variable
 module.exports.reviewsReadOne = function(req, res) {
   console.log("Getting single review");
   if (req.params && req.params.locationid && req.params.reviewid) {

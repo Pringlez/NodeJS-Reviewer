@@ -1,11 +1,13 @@
 var mongoose = require('mongoose');
 var reviewer = mongoose.model('Location');
 
+/** Send result back to user */
 var sendJSONresponse = function(res, status, content) {
   res.status(status);
   res.json(content);
 };
 
+/** Calculate earth distances */
 var theEarth = (function() {
   var earthRadius = 6371;
 
@@ -37,6 +39,7 @@ module.exports.locationsListByDistance = function(req, res) {
     maxDistance: theEarth.getRadsFromDistance(maxDistance),
     num: 10
   };
+  // If any data is missing, display error
   if (!lng || !lat || !maxDistance) {
     console.log('locationsListByDistance missing params');
     sendJSONresponse(res, 404, {
@@ -44,10 +47,12 @@ module.exports.locationsListByDistance = function(req, res) {
     });
     return;
   }
+  // Call geoNear to calculate the position of the user, send results back to build the list of locations
   reviewer.geoNear(point, geoOptions, function(err, results, stats) {
     var locations;
     console.log('Geo Results', results);
     console.log('Geo stats', stats);
+    // If theres an error then output to console
     if (err) {
       console.log('geoNear error:', err);
       sendJSONresponse(res, 404, err);
@@ -58,8 +63,10 @@ module.exports.locationsListByDistance = function(req, res) {
   });
 };
 
+/** Builds and returns a list of locations */
 var buildLocationList = function(req, res, results, stats) {
   var locations = [];
+  // Building the list of locations from the 'results' variable
   results.forEach(function(doc) {
     locations.push({
       distance: theEarth.getDistanceFromRads(doc.dis),
@@ -73,13 +80,15 @@ var buildLocationList = function(req, res, results, stats) {
   return locations;
 };
 
-/* Location by the id */
+/* Returns one location by the id */
 module.exports.locationsReadOne = function(req, res) {
   console.log('Finding location details', req.params);
   if (req.params && req.params.locationid) {
+    // Find a specific record by id
     reviewer
       .findById(req.params.locationid)
       .exec(function(err, location) {
+        // If not found or theres an error then output message
         if (!location) {
           sendJSONresponse(res, 404, {
             "message": "locationid not found"
@@ -105,6 +114,8 @@ module.exports.locationsReadOne = function(req, res) {
 /* Route - /api/locations */
 module.exports.locationsCreate = function(req, res) {
   console.log(req.body);
+  // Creating a new location document / object
+  // Using variables passed in the request
   reviewer.create({
     name: req.body.name,
     address: req.body.address,
@@ -122,6 +133,7 @@ module.exports.locationsCreate = function(req, res) {
       closed: req.body.closed2,
     }]
   }, function(err, location) {
+    // Output result back to console & user
     if (err) {
       console.log(err);
       sendJSONresponse(res, 400, err);
@@ -141,20 +153,24 @@ module.exports.locationsUpdateOne = function(req, res) {
     });
     return;
   }
+  // Updating a request document / object using the 'locationid' variable
   reviewer
     .findById(req.params.locationid)
     .select('-reviews -rating')
     .exec(
       function(err, location) {
+        // Handle the response from the server
         if (!location) {
           sendJSONresponse(res, 404, {
             "message": "locationid not found"
           });
           return;
         } else if (err) {
+          // If theres an error then display message
           sendJSONresponse(res, 400, err);
           return;
         }
+        // Updating the variables with new data passed in the request
         location.name = req.body.name;
         location.address = req.body.address;
         location.facilities = req.body.facilities.split(",");
@@ -170,6 +186,7 @@ module.exports.locationsUpdateOne = function(req, res) {
           closing: req.body.closing2,
           closed: req.body.closed2,
         }];
+        // Saving the location record to API database, display errors if found
         location.save(function(err, location) {
           if (err) {
             sendJSONresponse(res, 404, err);
@@ -186,10 +203,12 @@ module.exports.locationsUpdateOne = function(req, res) {
 module.exports.locationsDeleteOne = function(req, res) {
   var locationid = req.params.locationid;
   if (locationid) {
+    // Deleting a record from the database using the 'locationid' variable
     reviewer
       .findByIdAndRemove(locationid)
       .exec(
         function(err, location) {
+          // If theres an error then display message
           if (err) {
             console.log(err);
             sendJSONresponse(res, 404, err);
@@ -200,6 +219,7 @@ module.exports.locationsDeleteOne = function(req, res) {
         }
     );
   } else {
+    // Else there was no record
     sendJSONresponse(res, 404, {
       "message": "No locationid"
     });
