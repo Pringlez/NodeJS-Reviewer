@@ -1,5 +1,6 @@
 var mongoose = require( 'mongoose' );
 var gracefulShutdown;
+// The connection string to the database API
 var dbURI = 'mongodb://reviewer:testing123@192.168.1.136:55555/apps';
 if (process.env.NODE_ENV === 'production') {
     dbURI = process.env.MONGOLAB_URI;
@@ -7,12 +8,15 @@ if (process.env.NODE_ENV === 'production') {
 
 mongoose.connect(dbURI);
 
+// When connected to the database, display message
 mongoose.connection.on('connected', function() {
     console.log('Mongoose connected to ' + dbURI);
 });
+// When an error occurs in the database, display message
 mongoose.connection.on('error', function(err) {
     console.log('Mongoose connection error: ' + err);
 });
+// When disconnected from the database, display message
 mongoose.connection.on('disconnected', function() {
     console.log('Mongoose disconnected');
 });

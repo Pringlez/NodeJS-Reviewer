@@ -1,4 +1,5 @@
 var request = require('request');
+// The API connection address + port
 var apiOptions = {
   server : "http://localhost:3000"
 };
@@ -75,6 +76,7 @@ var renderHomepage = function(req, res, responseBody){
 var getLocationInfo = function (req, res, callback) {
   var requestOptions, path;
   path = "/api/locations/" + req.params.locationid;
+  // Setting the request type + address
   requestOptions = {
     url : apiOptions.server + path,
     method : "GET",
@@ -126,7 +128,7 @@ var renderReviewForm = function (req, res, locDetail) {
 module.exports.homelist = function(req, res){
   var requestOptions, path;
   path = '/api/locations';
-  // Building the request type + path
+  // Setting the request type + address
   requestOptions = {
     url : apiOptions.server + path,
     method : "GET",

@@ -17,6 +17,7 @@ module.exports.reviewsCreate = function(req, res) {
       .select('reviews')
       .exec(
         function(err, location) {
+          // If theres an error display message
           if (err) {
             sendJSONresponse(res, 400, err);
           } else {
@@ -115,6 +116,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
     .exec(
       function(err, location) {
         var thisReview;
+        // If the location is null return error message
         if (!location) {
           sendJSONresponse(res, 404, {
             "message": "locationid not found"
@@ -124,17 +126,22 @@ module.exports.reviewsUpdateOne = function(req, res) {
           sendJSONresponse(res, 400, err);
           return;
         }
+        // If the location has any reviews then continue
         if (location.reviews && location.reviews.length > 0) {
           thisReview = location.reviews.id(req.params.reviewid);
+          // Checking if the review is null
           if (!thisReview) {
             sendJSONresponse(res, 404, {
               "message": "reviewid not found"
             });
           } else {
+            // Updating the review data
             thisReview.author = req.body.author;
             thisReview.rating = req.body.rating;
             thisReview.reviewText = req.body.reviewText;
+            // Saving the new data to the database
             location.save(function(err, location) {
+              // If theres an error display message
               if (err) {
                 sendJSONresponse(res, 404, err);
               } else {
@@ -144,6 +151,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
             });
           }
         } else {
+          // Else return error message
           sendJSONresponse(res, 404, {
             "message": "No review to update"
           });
@@ -154,8 +162,9 @@ module.exports.reviewsUpdateOne = function(req, res) {
 
 // This function returns one specific review record by 'locationid' variable
 module.exports.reviewsReadOne = function(req, res) {
-  console.log("Getting single review");
+  // If the 'locationid' or 'reviewid' variables in the request are null, then display error
   if (req.params && req.params.locationid && req.params.reviewid) {
+    // Find a review by 'locationid' variable
     reviewer
       .findById(req.params.locationid)
       .select('name reviews')
@@ -163,6 +172,7 @@ module.exports.reviewsReadOne = function(req, res) {
         function(err, location) {
           console.log(location);
           var response, review;
+          // If the location is null, display error message
           if (!location) {
             sendJSONresponse(res, 404, {
               "message": "locationid not found"
@@ -172,13 +182,16 @@ module.exports.reviewsReadOne = function(req, res) {
             sendJSONresponse(res, 400, err);
             return;
           }
+          // If the location has any reviews then continue 
           if (location.reviews && location.reviews.length > 0) {
             review = location.reviews.id(req.params.reviewid);
+            // Checking if the review is null
             if (!review) {
               sendJSONresponse(res, 404, {
                 "message": "reviewid not found"
               });
             } else {
+              // Building the response & returning the review
               response = {
                 location: {
                   name: location.name,
@@ -189,6 +202,7 @@ module.exports.reviewsReadOne = function(req, res) {
               sendJSONresponse(res, 200, response);
             }
           } else {
+            // Else return error message
             sendJSONresponse(res, 404, {
               "message": "No reviews found"
             });
@@ -196,6 +210,7 @@ module.exports.reviewsReadOne = function(req, res) {
         }
     );
   } else {
+    // Else return error message
     sendJSONresponse(res, 404, {
       "message": "Not found, locationid and reviewid are both required"
     });
@@ -205,17 +220,20 @@ module.exports.reviewsReadOne = function(req, res) {
 // Delete a review
 // Route - /api/locations/:locationid/reviews/:reviewid
 module.exports.reviewsDeleteOne = function(req, res) {
+  // If the 'locationid' or 'reviewid' variables in the request are null, then display error
   if (!req.params.locationid || !req.params.reviewid) {
     sendJSONresponse(res, 404, {
       "message": "Not found, locationid and reviewid are both required"
     });
     return;
   }
+  // Deleting a review by first finding the location document by the 'locationid' variable
   reviewer
     .findById(req.params.locationid)
     .select('reviews')
     .exec(
       function(err, location) {
+        // If the location is not null then continue
         if (!location) {
           sendJSONresponse(res, 404, {
             "message": "locationid not found"
@@ -225,23 +243,30 @@ module.exports.reviewsDeleteOne = function(req, res) {
           sendJSONresponse(res, 400, err);
           return;
         }
+        // If the location has any reviews then continue
         if (location.reviews && location.reviews.length > 0) {
+          // Return an error message if the specific review is not found
           if (!location.reviews.id(req.params.reviewid)) {
             sendJSONresponse(res, 404, {
               "message": "reviewid not found"
             });
           } else {
+            // Else, the specific review was found and will be deleted
             location.reviews.id(req.params.reviewid).remove();
+            // Commit changes to the document, save document to database API
             location.save(function(err) {
+              // If there was an error, then display
               if (err) {
                 sendJSONresponse(res, 404, err);
               } else {
+                // Update the average rating after the review has been removed
                 updateAverageRating(location._id);
                 sendJSONresponse(res, 204, null);
               }
             });
           }
         } else {
+          // Else return error message
           sendJSONresponse(res, 404, {
             "message": "No review to delete"
           });
