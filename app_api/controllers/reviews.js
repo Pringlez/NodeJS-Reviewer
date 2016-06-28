@@ -28,7 +28,7 @@ module.exports.reviewsCreate = function(req, res) {
     );
   } else {
     sendJSONresponse(res, 404, {
-      "message": "Not found, locationid required"
+      "message": "Not found, location ID required!"
     });
   }
 };
@@ -36,7 +36,7 @@ module.exports.reviewsCreate = function(req, res) {
 var doAddReview = function(req, res, location) {
   // If the location is not null then continue
   if (!location) {
-    sendJSONresponse(res, 404, "locationid not found");
+    sendJSONresponse(res, 404, "Location ID not found!");
   } else {
     // Add / push the new review to the location document / object
     location.reviews.push({
@@ -63,7 +63,7 @@ var doAddReview = function(req, res, location) {
 
 // This function updates the location's average rating
 var updateAverageRating = function(locationid) {
-  console.log("Update rating average for", locationid);
+  console.log("Update average rating for record", locationid);
   // Find location by 'locationid'
   reviewer
     .findById(locationid)
@@ -105,7 +105,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
   // If no location or review record was found then output error message
   if (!req.params.locationid || !req.params.reviewid) {
     sendJSONresponse(res, 404, {
-      "message": "Not found, locationid and reviewid are both required"
+      "message": "Not found, location ID and review ID are both required!"
     });
     return;
   }
@@ -119,7 +119,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
         // If the location is null return error message
         if (!location) {
           sendJSONresponse(res, 404, {
-            "message": "locationid not found"
+            "message": "Location ID not found!"
           });
           return;
         } else if (err) {
@@ -132,7 +132,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
           // Checking if the review is null
           if (!thisReview) {
             sendJSONresponse(res, 404, {
-              "message": "reviewid not found"
+              "message": "Review ID not found!"
             });
           } else {
             // Updating the review data
@@ -153,7 +153,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
         } else {
           // Else return error message
           sendJSONresponse(res, 404, {
-            "message": "No review to update"
+            "message": "No review to update!"
           });
         }
       }
@@ -175,7 +175,7 @@ module.exports.reviewsReadOne = function(req, res) {
           // If the location is null, display error message
           if (!location) {
             sendJSONresponse(res, 404, {
-              "message": "locationid not found"
+              "message": "Location ID not found!"
             });
             return;
           } else if (err) {
@@ -188,7 +188,7 @@ module.exports.reviewsReadOne = function(req, res) {
             // Checking if the review is null
             if (!review) {
               sendJSONresponse(res, 404, {
-                "message": "reviewid not found"
+                "message": "Review ID not found!"
               });
             } else {
               // Building the response & returning the review
@@ -204,7 +204,7 @@ module.exports.reviewsReadOne = function(req, res) {
           } else {
             // Else return error message
             sendJSONresponse(res, 404, {
-              "message": "No reviews found"
+              "message": "No reviews found!"
             });
           }
         }
@@ -212,7 +212,7 @@ module.exports.reviewsReadOne = function(req, res) {
   } else {
     // Else return error message
     sendJSONresponse(res, 404, {
-      "message": "Not found, locationid and reviewid are both required"
+      "message": "Not found, location ID and review ID are both required!"
     });
   }
 };
@@ -223,7 +223,7 @@ module.exports.reviewsDeleteOne = function(req, res) {
   // If the 'locationid' or 'reviewid' variables in the request are null, then display error
   if (!req.params.locationid || !req.params.reviewid) {
     sendJSONresponse(res, 404, {
-      "message": "Not found, locationid and reviewid are both required"
+      "message": "Not found, location ID and review ID are both required!"
     });
     return;
   }
@@ -236,7 +236,7 @@ module.exports.reviewsDeleteOne = function(req, res) {
         // If the location is not null then continue
         if (!location) {
           sendJSONresponse(res, 404, {
-            "message": "locationid not found"
+            "message": "Location ID not found!"
           });
           return;
         } else if (err) {
@@ -248,7 +248,7 @@ module.exports.reviewsDeleteOne = function(req, res) {
           // Return an error message if the specific review is not found
           if (!location.reviews.id(req.params.reviewid)) {
             sendJSONresponse(res, 404, {
-              "message": "reviewid not found"
+              "message": "Review ID not found!"
             });
           } else {
             // Else, the specific review was found and will be deleted
@@ -268,7 +268,7 @@ module.exports.reviewsDeleteOne = function(req, res) {
         } else {
           // Else return error message
           sendJSONresponse(res, 404, {
-            "message": "No review to delete"
+            "message": "No review to delete!"
           });
         }
       }

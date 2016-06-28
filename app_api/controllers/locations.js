@@ -41,9 +41,9 @@ module.exports.locationsListByDistance = function(req, res) {
   };
   // If any data is missing, display error
   if (!lng || !lat || !maxDistance) {
-    console.log('locationsListByDistance missing params');
+    console.log('locationsListByDistance missing variables!');
     sendJSONresponse(res, 404, {
-      "message": "lng, lat and maxDistance query parameters are all required"
+      "message": "The variables lng, lat and maxDistance are all required for the query!"
     });
     return;
   }
@@ -51,7 +51,7 @@ module.exports.locationsListByDistance = function(req, res) {
   reviewer.geoNear(point, geoOptions, function(err, results, stats) {
     var locations;
     console.log('Geo Results', results);
-    console.log('Geo stats', stats);
+    console.log('Geo Stats', stats);
     // If theres an error then output to console
     if (err) {
       console.log('geoNear error:', err);
@@ -82,7 +82,7 @@ var buildLocationList = function(req, res, results, stats) {
 
 /* Returns one location by the id */
 module.exports.locationsReadOne = function(req, res) {
-  console.log('Finding location details', req.params);
+  console.log('Finding location...', req.params);
   if (req.params && req.params.locationid) {
     // Find a specific record by id
     reviewer
@@ -91,7 +91,7 @@ module.exports.locationsReadOne = function(req, res) {
         // If not found or theres an error then output message
         if (!location) {
           sendJSONresponse(res, 404, {
-            "message": "locationid not found"
+            "message": "Location ID not found!"
           });
           return;
         } else if (err) {
@@ -103,9 +103,9 @@ module.exports.locationsReadOne = function(req, res) {
         sendJSONresponse(res, 200, location);
       });
   } else {
-    console.log('No locationid specified');
+    console.log('No location ID specified!');
     sendJSONresponse(res, 404, {
-      "message": "No locationid in request"
+      "message": "No location ID in request!"
     });
   }
 };
@@ -149,7 +149,7 @@ module.exports.locationsCreate = function(req, res) {
 module.exports.locationsUpdateOne = function(req, res) {
   if (!req.params.locationid) {
     sendJSONresponse(res, 404, {
-      "message": "Not found, locationid is required"
+      "message": "Location ID not found, it is required!"
     });
     return;
   }
@@ -162,7 +162,7 @@ module.exports.locationsUpdateOne = function(req, res) {
         // Handle the response from the server
         if (!location) {
           sendJSONresponse(res, 404, {
-            "message": "locationid not found"
+            "message": "Location ID not found!"
           });
           return;
         } else if (err) {
@@ -214,14 +214,14 @@ module.exports.locationsDeleteOne = function(req, res) {
             sendJSONresponse(res, 404, err);
             return;
           }
-          console.log("Location id " + locationid + " deleted");
+          console.log("Location ID " + locationid + " was deleted!");
           sendJSONresponse(res, 204, null);
         }
     );
   } else {
     // Else there was no record
     sendJSONresponse(res, 404, {
-      "message": "No locationid"
+      "message": "No locationid found!"
     });
   }
 };
