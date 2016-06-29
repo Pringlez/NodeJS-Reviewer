@@ -27,6 +27,7 @@ module.exports.reviewsCreate = function(req, res) {
         }
     );
   } else {
+    // Else location ID not found, return error message
     sendJSONresponse(res, 404, {
       "message": "Not found, location ID required!"
     });
@@ -123,6 +124,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
           });
           return;
         } else if (err) {
+          // Else if error found, return message
           sendJSONresponse(res, 400, err);
           return;
         }
@@ -145,6 +147,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
               if (err) {
                 sendJSONresponse(res, 404, err);
               } else {
+                // Update average rating, send response back with review
                 updateAverageRating(location._id);
                 sendJSONresponse(res, 200, thisReview);
               }
@@ -179,6 +182,7 @@ module.exports.reviewsReadOne = function(req, res) {
             });
             return;
           } else if (err) {
+            // Else if error found, return message
             sendJSONresponse(res, 400, err);
             return;
           }
@@ -240,6 +244,7 @@ module.exports.reviewsDeleteOne = function(req, res) {
           });
           return;
         } else if (err) {
+          // Else if error found, return message
           sendJSONresponse(res, 400, err);
           return;
         }

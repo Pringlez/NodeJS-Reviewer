@@ -99,11 +99,13 @@ module.exports.locationsReadOne = function(req, res) {
           sendJSONresponse(res, 404, err);
           return;
         }
+        // If there was no error then return location
         console.log(location);
         sendJSONresponse(res, 200, location);
       });
   } else {
     console.log('No location ID specified!');
+    // Else no record with that ID exists
     sendJSONresponse(res, 404, {
       "message": "No location ID in request!"
     });
@@ -133,11 +135,12 @@ module.exports.locationsCreate = function(req, res) {
       closed: req.body.closed2,
     }]
   }, function(err, location) {
-    // Output result back to console & user
+    // Output error message if problem found
     if (err) {
       console.log(err);
       sendJSONresponse(res, 400, err);
     } else {
+      // If no error is found, output result back to console & user
       console.log(location);
       sendJSONresponse(res, 201, location);
     }
