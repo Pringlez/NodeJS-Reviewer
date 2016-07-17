@@ -1,9 +1,11 @@
 angular.module('reviewerApp', []);
 
+/** Checking if passed var is a number */
 var _isNumeric = function (n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 };
 
+/** Formatting distance to a specific unit, km or miles */
 var formatDistance = function () {
   return function (distance) {
     var numDistance, unit;
@@ -22,6 +24,7 @@ var formatDistance = function () {
   };
 };
 
+/** Points towards the stars rating HTML page */
 var ratingStars = function () {
   return {
     // restrict: 'EA',
@@ -33,6 +36,7 @@ var ratingStars = function () {
   };
 };
 
+/** Gets geo location function and returns */
 var geolocation = function () {
   var getPosition = function (cbSuccess, cbError, cbNoGeo) {
     if (navigator.geolocation) {
@@ -47,6 +51,7 @@ var geolocation = function () {
   };
 };
 
+/** Location list controller */
 var locationListCtrl = function ($scope, reviewerData, geolocation) {
   $scope.message = "Checking your location";
 
@@ -79,6 +84,7 @@ var locationListCtrl = function ($scope, reviewerData, geolocation) {
   geolocation.getPosition($scope.getData,$scope.showError,$scope.noGeo);
 };
 
+/** Returns reviewer data */
 var reviewerData = function ($http) {
   var locationByCoords = function (lat, lng) {
     return $http.get('/api/locations?lng=' + lng + '&lat=' + lat + '&maxDistance=20');
