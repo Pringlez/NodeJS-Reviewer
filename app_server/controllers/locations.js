@@ -49,16 +49,6 @@ var _showError = function (req, res, status) {
 
 /** This function renders the home page */
 var renderHomepage = function(req, res, responseBody){
-  /*var message;
-  // If the body is not an instance of an Array, theres an issue with the API
-  if (!(responseBody instanceof Array)) {
-    message = "API Lookup Error!";
-    responseBody = [];
-  } else {
-    if (!responseBody.length) {
-      message = "No Places Found!";
-    }
-  }*/
   // Render the 'location-list' view, passing title, pageHeader, sidebar, locations and message variables
   res.render('locations-list', {
     title: 'Reviewer - Find great places to eat & drink',
@@ -125,35 +115,6 @@ var renderReviewForm = function (req, res, locDetail) {
 
 /* Sending a GET request to render the 'home' page */
 module.exports.homelist = function(req, res){
-  /*var requestOptions, path;
-  path = '/api/locations';
-  // Setting the request type + address
-  requestOptions = {
-    url : apiOptions.server + path,
-    method : "GET",
-    json : {},
-    qs : {
-      lng : -0.7992599,
-      lat : 51.378091,
-      maxDistance : 20
-    }
-  };
-  // Sending the request with parameters 'requestOptions'
-  request(
-    requestOptions,
-    function(err, response, body) {
-      var i, data;
-      data = body;
-      // Calculate & format distance
-      if (response.statusCode === 200 && data.length) {
-        for (i=0; i<data.length; i++) {
-          data[i].distance = _formatDistance(data[i].distance);
-        }
-      }
-      // Calling the home page render function
-      renderHomepage(req, res, data);
-    }
-  );*/
   renderHomepage(req, res);
 };
 
