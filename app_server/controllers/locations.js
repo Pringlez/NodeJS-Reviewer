@@ -49,7 +49,7 @@ var _showError = function (req, res, status) {
 
 /** This function renders the home page */
 var renderHomepage = function(req, res, responseBody){
-  var message;
+  /*var message;
   // If the body is not an instance of an Array, theres an issue with the API
   if (!(responseBody instanceof Array)) {
     message = "API Lookup Error!";
@@ -58,7 +58,7 @@ var renderHomepage = function(req, res, responseBody){
     if (!responseBody.length) {
       message = "No Places Found!";
     }
-  }
+  }*/
   // Render the 'location-list' view, passing title, pageHeader, sidebar, locations and message variables
   res.render('locations-list', {
     title: 'Reviewer - Find great places to eat & drink',
@@ -67,8 +67,7 @@ var renderHomepage = function(req, res, responseBody){
       strapline: ' - Find great places to eat & drink'
     },
     sidebar: "Looking for wifi and a seat? Reviewer helps you find places to work when out and about. Perhaps with coffee, cake or a pint? Let Reviewer help you find the place you're looking for.",
-    locations: responseBody,
-    message: message
+    locations: responseBody
   });
 };
 
@@ -126,7 +125,7 @@ var renderReviewForm = function (req, res, locDetail) {
 
 /* Sending a GET request to render the 'home' page */
 module.exports.homelist = function(req, res){
-  var requestOptions, path;
+  /*var requestOptions, path;
   path = '/api/locations';
   // Setting the request type + address
   requestOptions = {
@@ -154,7 +153,8 @@ module.exports.homelist = function(req, res){
       // Calling the home page render function
       renderHomepage(req, res, data);
     }
-  );
+  );*/
+  renderHomepage(req, res);
 };
 
 /* Sending a GET request to render the location 'details' page */

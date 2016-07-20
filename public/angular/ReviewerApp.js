@@ -61,7 +61,7 @@ var locationListCtrl = function ($scope, reviewerData, geolocation) {
     $scope.message = "Searching for nearby places";
     reviewerData.locationByCoords(lat, lng)
       .success(function(data) {
-        $scope.message = data.length > 0 ? "" : "No locations found nearby";
+        $scope.message = data.length > 0 ? "" : "No locations found nearby"; 
         $scope.data = { locations: data };
       })
       .error(function (e) {
@@ -87,55 +87,11 @@ var locationListCtrl = function ($scope, reviewerData, geolocation) {
 /** Returns reviewer data */
 var reviewerData = function ($http) {
   var locationByCoords = function (lat, lng) {
-    return $http.get('/api/locations?lng=' + lng + '&lat=' + lat + '&maxDistance=20');
+    return $http.get('/api/locations?lng=' + lng + '&lat=' + lat + '&maxDistance=20000');
   };
   return {
     locationByCoords : locationByCoords
   };
-
- /* return [{
-      name: 'Burger Queen',
-      address: '125 High Street, Reading, RG6 1PS',
-      rating: 3,
-      facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-      distance: '0.296456',
-      _id: '5370a35f2536f6785f8dfb6a'
-    },{
-      name: 'Costy',
-      address: '125 High Street, Reading, RG6 1PS',
-      rating: 5,
-      facilities: ['Hot drinks', 'Food', 'Alcoholic drinks'],
-      distance: '0.7865456',
-      _id: '5370a35f2536f6785f8dfb6a'
-    },{
-      name: 'Cafe Hero',
-      address: '125 High Street, Reading, RG6 1PS',
-      rating: 0,
-      facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-      distance: '0.94561236',
-      _id: '5370a35f2536f6785f8dfb6a'
-    },{
-      name: 'Starcups',
-      address: '125 High Street, Reading, RG6 1PS',
-      rating: 1,
-      facilities: ['Hot drinks', 'Food', 'Cold drinks'],
-      distance: '1.06548',
-      _id: '5370a35f2536f6785f8dfb6a'
-    },{
-      name: 'Simon\'s cafe',
-      address: '125 High Street, Reading, RG6 1PS',
-      rating: 3,
-      facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-      distance: '2.3654',
-      _id: '5370a35f2536f6785f8dfb6a'
-    },{
-      name: 'Sally\'s pub',
-      address: '125 High Street, Reading, RG6 1PS',
-      rating: 5,
-      facilities: ['Hot drinks', 'Food', 'Alcoholic drinks'],
-      distance: '4.213654',
-      _id: '5370a35f2536f6785f8dfb6a'
-    }];*/
 };
 
 angular
@@ -145,4 +101,3 @@ angular
   .directive('ratingStars', ratingStars)
   .service('reviewerData', reviewerData)
   .service('geolocation', geolocation);
-
