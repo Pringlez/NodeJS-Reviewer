@@ -109,7 +109,8 @@ var renderReviewForm = function (req, res, locDetail) {
   res.render('add-review', {
     title: 'Review ' + locDetail.name + ' on Reviewer',
     pageHeader: { title: 'Review ' + locDetail.name },
-    error: req.query.err
+    error: req.query.err,
+    url: req.originalUrl
   });
 };
 
