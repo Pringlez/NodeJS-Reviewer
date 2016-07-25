@@ -1,8 +1,8 @@
 (function () {
 
-angular.module('reviewerApp', []);
+  angular.module('reviewerApp', ['ngRoute']);
 
-function config ($routeProvider) {
+  function config ($routeProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'home/home.view.html',
