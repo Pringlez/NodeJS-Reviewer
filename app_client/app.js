@@ -1,19 +1,30 @@
 (function () {
 
-  angular.module('reviewerApp', ['ngRoute']);
+  angular.module('reviewerApp', ['ngRoute', 'ngSanitize', 'ui.bootstrap']);
 
-  function config ($routeProvider) {
+  function config ($routeProvider, $locationProvider) {
     $routeProvider
       .when('/', {
         templateUrl: 'home/home.view.html',
         controller: 'homeCtrl',
         controllerAs: 'vm'
       })
+      .when('/about', {
+        templateUrl: '/common/views/genericText.view.html',
+        controller: 'aboutCtrl',
+        controllerAs: 'vm'
+      })
+      .when('/location/:locationid', {
+        templateUrl: '/locationDetail/locationDetail.view.html',
+        controller: 'locationDetailCtrl',
+        controllerAs: 'vm'
+      })
       .otherwise({redirectTo: '/'});
+    $locationProvider.html5Mode(true);
   }
 
   angular
     .module('reviewerApp')
-    .config(['$routeProvider', config]);
+    .config(['$routeProvider', '$locationProvider', config]);
 
  })();   
