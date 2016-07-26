@@ -1,15 +1,15 @@
 (function () {
 
   angular
-    .module('loc8rApp')
+    .module('reviewerApp')
     .controller('locationDetailCtrl', locationDetailCtrl);
 
-  locationDetailCtrl.$inject = ['$routeParams', '$modal', 'loc8rData'];
-  function locationDetailCtrl ($routeParams, $modal, loc8rData) {
+  locationDetailCtrl.$inject = ['$routeParams', '$modal', 'reviewerData'];
+  function locationDetailCtrl ($routeParams, $modal, reviewerData) {
     var vm = this;
     vm.locationid = $routeParams.locationid;
 
-    loc8rData.locationById(vm.locationid)
+    reviewerData.locationById(vm.locationid)
       .success(function(data) {
         vm.data = { location: data };
         vm.pageHeader = {
