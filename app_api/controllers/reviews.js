@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-var reviewer = mongoose.model('Location');
+var locationMod = mongoose.model('Location');
+var userMod = mongoose.model('USer');
 
 /** Send result back to user */
 var sendJSONresponse = function(res, status, content) {
@@ -10,31 +11,62 @@ var sendJSONresponse = function(res, status, content) {
 /** Adding a new review, providing a locationid */
 /** Route - /api/locations/:locationid/reviews */
 module.exports.reviewsCreate = function(req, res) {
-  if (req.params.locationid) {
-    // Creating a new review document / object by locating record by 'locationid' variable
-    reviewer
-      .findById(req.params.locationid)
-      .select('reviews')
-      .exec(
-        function(err, location) {
-          // If theres an error display message
-          if (err) {
-            sendJSONresponse(res, 400, err);
-          } else {
-            // Pass the location to be updated with the new review
-            doAddReview(req, res, location);
+  getAuthor(req, res, function (req, res, userName) {
+    if (req.params.locationid) {
+      // Creating a new review document / object by locating record by 'locationid' variable
+      locationMod
+        .findById(req.params.locationid)
+        .select('reviews')
+        .exec(
+          function(err, location) {
+            // If theres an error display message
+            if (err) {
+              sendJSONresponse(res, 400, err);
+            } else {
+              // Pass the location to be updated with the new review
+              doAddReview(req, res, location);
+            }
           }
+      );
+    } else {
+      // Else location ID not found, return error message
+      sendJSONresponse(res, 404, {
+        "message": "Not found, location ID required!"
+      });
+    }
+  });
+};
+
+/** Checking if the email sent is registered */
+var getAuthor = function(req, res, callback) {
+  console.log("Finding author with email " + req.payload.email);
+  if (req.payload.email) {
+    userMod
+      .findOne({ email : req.payload.email })
+      .exec(function(err, user) {
+        if (!user) {
+          sendJSONresponse(res, 404, {
+            "message": "User not found"
+          });
+          return;
+        } else if (err) {
+          console.log(err);
+          sendJSONresponse(res, 404, err);
+          return;
         }
-    );
+        console.log(user);
+        callback(req, res, user.name);
+      });
+
   } else {
-    // Else location ID not found, return error message
     sendJSONresponse(res, 404, {
-      "message": "Not found, location ID required!"
+      "message": "User not found"
     });
+    return;
   }
 };
 
-var doAddReview = function(req, res, location) {
+var doAddReview = function(req, res, location, author) {
   // If the location is not null then continue
   if (!location) {
     sendJSONresponse(res, 404, "Location ID not found!");
@@ -66,7 +98,7 @@ var doAddReview = function(req, res, location) {
 var updateAverageRating = function(locationid) {
   console.log("Update average rating for record", locationid);
   // Find location by 'locationid'
-  reviewer
+  locationMod
     .findById(locationid)
     .select('reviews')
     .exec(
@@ -111,7 +143,7 @@ module.exports.reviewsUpdateOne = function(req, res) {
     return;
   }
   // Find the location by 'locationid' record
-  reviewer
+  locationMod
     .findById(req.params.locationid)
     .select('reviews')
     .exec(
@@ -168,7 +200,7 @@ module.exports.reviewsReadOne = function(req, res) {
   // If the 'locationid' or 'reviewid' variables in the request are null, then display error
   if (req.params && req.params.locationid && req.params.reviewid) {
     // Find a review by 'locationid' variable
-    reviewer
+    locationMod
       .findById(req.params.locationid)
       .select('name reviews')
       .exec(
@@ -232,7 +264,7 @@ module.exports.reviewsDeleteOne = function(req, res) {
     return;
   }
   // Deleting a review by first finding the location document by the 'locationid' variable
-  reviewer
+  locationMod
     .findById(req.params.locationid)
     .select('reviews')
     .exec(
