@@ -7,6 +7,7 @@ var sendJSONresponse = function(res, status, content) {
   res.json(content);
 };
 
+/** Register user function - Name, Email & Password */
 module.exports.register = function(req, res) {
   if(!req.body.name || !req.body.email || !req.body.password) {
     sendJSONresponse(res, 400, {
@@ -22,8 +23,10 @@ module.exports.register = function(req, res) {
 
   user.setPassword(req.body.password);
 
+  // Save a new user
   user.save(function(err) {
     var token;
+    // Check if error present, else generate JWT and send it back to browser
     if (err) {
       sendJSONresponse(res, 404, err);
     } else {
@@ -36,6 +39,7 @@ module.exports.register = function(req, res) {
 
 };
 
+/** Login user function - Email & Password */
 module.exports.login = function(req, res) {
   if(!req.body.email || !req.body.password) {
     sendJSONresponse(res, 400, {
