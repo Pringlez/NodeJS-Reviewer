@@ -19,6 +19,8 @@ var userSchema = new mongoose.Schema({
 
 /** Set user password */
 userSchema.methods.setPassword = function(password){
+  // Generating a slat in hex format & passing the password with the salt into
+  // the hash function to securely store the password in database
   this.salt = crypto.randomBytes(16).toString('hex');
   this.hash = crypto.pbkdf2Sync(password, this.salt, 1000, 64).toString('hex');
 };
@@ -33,13 +35,15 @@ userSchema.methods.validPassword = function(password) {
 userSchema.methods.generateJwt = function() {
   var expiry = new Date();
   expiry.setDate(expiry.getDate() + 7);
-
+  
+  // Generating a new JWT file to store user session data
   return jwt.sign({
     _id: this._id,
     email: this.email,
     name: this.name,
+    // The file expires in a give time
     exp: parseInt(expiry.getTime() / 1000),
-  }, process.env.JWT_SECRET); // DO NOT KEEP YOUR SECRET IN THE CODE!
+  }, process.env.JWT_SECRET);
 };
 
 mongoose.model('User', userSchema);

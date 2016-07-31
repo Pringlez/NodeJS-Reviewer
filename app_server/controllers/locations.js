@@ -114,26 +114,26 @@ var renderReviewForm = function (req, res, locDetail) {
   });
 };
 
-/* Sending a GET request to render the 'home' page */
+/** Sending a GET request to render the 'home' page */
 module.exports.homelist = function(req, res){
   renderHomepage(req, res);
 };
 
-/* Sending a GET request to render the location 'details' page */
+/** Sending a GET request to render the location 'details' page */
 module.exports.locationInfo = function(req, res){
   getLocationInfo(req, res, function(req, res, responseData) {
     renderDetailPage(req, res, responseData);
   });
 };
 
-/* Renders the 'Add review' page */
+/** Renders the 'Add review' page */
 module.exports.addReview = function(req, res){
   getLocationInfo(req, res, function(req, res, responseData) {
     renderReviewForm(req, res, responseData);
   });
 };
 
-/* Sending a POST request to send data from the 'Add review' page */
+/** Sending a POST request to send data from the 'Add review' page */
 module.exports.doAddReview = function(req, res){
   var requestOptions, path, locationid, postdata;
   locationid = req.params.locationid;

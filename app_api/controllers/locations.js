@@ -25,7 +25,7 @@ var theEarth = (function() {
   };
 })();
 
-/* List of locations */
+/** List of locations */
 module.exports.locationsListByDistance = function(req, res) {
   var lng = parseFloat(req.query.lng);
   var lat = parseFloat(req.query.lat);
@@ -80,7 +80,7 @@ var buildLocationList = function(req, res, results, stats) {
   return locations;
 };
 
-/* Returns one location by the id */
+/** Returns one location by the id */
 module.exports.locationsReadOne = function(req, res) {
   console.log('Finding location...', req.params);
   if (req.params && req.params.locationid) {
@@ -112,8 +112,8 @@ module.exports.locationsReadOne = function(req, res) {
   }
 };
 
-/* Add a new location */
-/* Route - /api/locations */
+/** Add a new location */
+/** Route - /api/locations */
 module.exports.locationsCreate = function(req, res) {
   console.log(req.body);
   // Creating a new location document / object
@@ -147,8 +147,8 @@ module.exports.locationsCreate = function(req, res) {
   });
 };
 
-/* Update a location */
-/* Route - /api/locations/:locationid */
+/** Update a location */
+/** Route - /api/locations/:locationid */
 module.exports.locationsUpdateOne = function(req, res) {
   if (!req.params.locationid) {
     sendJSONresponse(res, 404, {
@@ -201,8 +201,8 @@ module.exports.locationsUpdateOne = function(req, res) {
   );
 };
 
-/* Delete a location */
-/* Route - /api/locations/:locationid */
+/** Delete a location */
+/** Route - /api/locations/:locationid */
 module.exports.locationsDeleteOne = function(req, res) {
   var locationid = req.params.locationid;
   if (locationid) {
