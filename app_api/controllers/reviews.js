@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var locationMod = mongoose.model('Location');
-var userMod = mongoose.model('USer');
+var userMod = mongoose.model('User');
 
 /** Send result back to user */
 var sendJSONresponse = function(res, status, content) {

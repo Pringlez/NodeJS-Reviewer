@@ -16,12 +16,14 @@ module.exports.register = function(req, res) {
     return;
   }
 
-  // 
+  // Ceate a new user object
   var user = new User();
 
+  // Init the user with data
   user.name = req.body.name;
   user.email = req.body.email;
 
+  // Set password with secure hash function
   user.setPassword(req.body.password);
 
   // Save a new user

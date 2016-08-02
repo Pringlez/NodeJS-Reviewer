@@ -4,10 +4,13 @@
     .module('reviewerApp')
     .controller('locationDetailCtrl', locationDetailCtrl);
 
-  locationDetailCtrl.$inject = ['$routeParams', '$modal', 'reviewerData'];
-  function locationDetailCtrl ($routeParams, $modal, reviewerData) {
+  locationDetailCtrl.$inject = ['$routeParams', '$location', '$modal', 'reviewerData', 'authentication'];
+  function locationDetailCtrl ($routeParams, $location, $modal, reviewerData, authentication) {
     var vm = this;
+
     vm.locationid = $routeParams.locationid;
+    vm.isLoggedIn = authentication.isLoggedIn();
+    vm.currentPath = $location.path();
 
     reviewerData.locationById(vm.locationid)
       .success(function(data) {
